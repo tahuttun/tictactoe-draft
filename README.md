@@ -1,2 +1,0 @@
-# tictactoe-draft
-ChatGPT challenge
