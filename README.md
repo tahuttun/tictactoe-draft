@@ -42,4 +42,6 @@ The application should now be running at http://localhost:8000/static/index.html
  *  /api/games/<int:game_id>/board/: Get the board state of a specific game.
  *  /api/games/<int:game_id>/delete/: Delete a specific game.
 
+Picture:
 
+![Image](https://raw.githubusercontent.com/tahuttun/tictactoe-draft/main/2023-05-01%2020_36_16-Window.png)
