@@ -1,0 +1,261 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Tic Tac Toe</title>
+   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/axios@0.24.0/dist/axios.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+   <style>
+     .grid-container {
+       display: grid;
+     }
+     .grid-item {
+       border: 1px solid black;
+       padding: 30px;
+       font-size: 24px;
+       text-align: center;
+     }
+     
+ #top-scores {
+   margin-top: 50px;
+ }
+
+ table {
+   border-collapse: collapse;
+   width: 100%;
+ }
+
+ th, td {
+   border: 1px solid black;
+   padding: 10px;
+   text-align: center;
+ }
+
+ th {
+   background-color: #ddd;
+ }
+   </style>
+ </head>
+ <body>
+   <div id="app">
+     <div>
+        <label for="game-select">Choose a game:</label>
+        <select id="game-select" v-model="gameIdSelection">
+          <option v-for="game in games" :value="game.id">{{ game.id }}</option>
+        </select>
+        <button @click="setBoard">Load Game</button>
+       <button @click="goBack">Backward</button>
+       <button @click="goForward">Forward</button>
+      </div>
+
+ <div class="grid-container" :style="{ gridTemplateColumns: 'repeat(' + gridSize + ', 1fr)' }">
+   <div v-for="(cell, index) in board" class="grid-item" @click="makeMove(index)">
+     {{ cell }}
+   </div>
+ </div>
+
+ <div class="mt-4">
+   <div class="mb-3">
+     <label for="grid-size" class="form-label">Choose grid size:</label>
+     <input type="number" id="grid-size" v-model="gridSizeNew" min="3" max="10" class="form-control" placeholder="3" value="3">
+   </div>
+   <div class="mb-3">
+     <label for="player1-name" class="form-label">Player 1 Name:</label>
+     <input type="text" id="player1-name" v-model="player1Name" class="form-control">
+   </div>
+   <div class="mb-3">
+     <label for="player2-name" class="form-label">Player 2 Name:</label>
+     <input type="text" id="player2-name" v-model="player2Name" placeholder="AI" value="AI" class="form-control">
+   </div>
+   <button @click="resetGame" class="btn btn-success">New Game</button>
+ </div>
+
+ <div v-if="gameId" class="mt-4">
+   <table>
+     <tr>
+       <th>Game ID</th>
+       <td>{{ gameId }}</td>
+     </tr>
+     <tr>
+       <th>Player1</th>
+       <td>{{ tic_user }}</td>
+     </tr>
+     <tr>
+       <th>Player2</th>
+       <td>{{ tac_user }}</td>
+     </tr>
+     <tr>
+       <th>Player1 Status</th>
+       <td>{{ status }}</td>
+     </tr>
+   </table>
+ </div>
+
+ <div id="top-scores">
+   <h2>Top Scores</h2>
+   <table class="table">
+     <thead>
+       <tr>
+         <th>Username</th>
+         <th>Total Games Played</th>
+         <th>Total Games Won</th>
+         <th>Total Games Lost</th>
+         <th>Win/Loss Ratio</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr v-for="player in topPlayers" :key="player.id">
+         <td>{{ player.username }}</td>
+         <td>{{ player.total_games_played }}</td>
+         <td>{{ player.total_games_won }}</td>
+         <td>{{ player.total_games_lost }}</td>
+         <td>{{ player.win_loss_ratio }}</td>
+       </tr>
+     </tbody>
+   </table>
+ </div>
+   
+
+   <script>
+     // const apiUrl = "http://127.0.0.1:8000/api/";
+        const apiUrl = "/api/";
+
+     new Vue({
+       el: "#app",
+       data: {
+         board: [],
+         currentPlayer: "Hax",
+         player1Name: "Hax",
+         player2Name: "AI",
+         gameId: 1,
+         gameIdSelection: 1,
+         errorMessage: "",
+         gridSize: 3,
+         status: "",
+         step: 0,
+         step_max: 0,
+         topPlayers: [],
+         games: []
+       },
+       created() {
+         //this.createGame();
+         this.fetchTopPlayers();
+         //this.fetchGames();
+         this.setLatestGame();
+         setInterval(() => {
+            this.fetchGames();
+         }, 5000);
+         setInterval(() => {
+            this.fetchBoard();
+         }, 1500);
+       },
+       methods: {
+          async fetchGames() {
+            try {
+              const response = await axios.get(`${apiUrl}games/`);
+              this.games = response.data;
+            } catch (error) {
+              this.errorMessage = "Error fetching games";
+            }
+          },
+       async setLatestGame() {
+         await this.fetchGames();
+         if (this.games.length > 0) {
+           const latestGame = this.games[this.games.length - 1];
+           this.gameIdSelection = latestGame.id;
+           await this.setBoard();
+         }
+       },
+         async createGame() {
+           try {
+             const response = await axios.post(`${apiUrl}games/`, {
+               player: 1,
+               game_time: 0,
+               game_outcome: "going",
+               tic_user: this.player1Name,
+               tac_user: this.player2Name,
+               grid_size: this.gridSizeNew
+             });
+             this.gameId = response.data.id;
+             this.board = Array(this.gridSize * this.gridSize).fill("-");
+           } catch (error) {
+             this.errorMessage = "Error creating game";
+           }
+         },
+         async makeMove(index) {
+           if (this.board[index] !== "-") {
+             return;
+           }
+           await this.postMove(index);
+         },
+         async postMove(index) {
+           try {
+             this.step = this.step_max+10000;
+             const x = Math.floor(index / this.gridSize);
+             const y = index % this.gridSize;
+             console.log("move" + `${x},${y}`);
+             await axios.post(`${apiUrl}moves/`, {
+               game: this.gameId,
+               move_number: this.board.filter((cell) => cell !== "-").length,
+               move: `${x},${y}`,
+             });
+           } catch (error) {
+             this.errorMessage = "Error posting move";
+           }
+         },
+           async fetchTopPlayers() {
+             try {
+               const response = await axios.get(`${apiUrl}best-players/`);
+               this.topPlayers = response.data;
+             } catch (error) {
+               this.errorMessage = "Error fetching top players";
+             }
+           },
+         async fetchBoard() {
+           try {
+             const response = await axios.get(`${apiUrl}games/${this.gameId}/board?step=${this.step}`);
+             this.board = response.data.board.flat();
+             this.currentPlayer = response.data.current_player;
+             this.tic_user = response.data.tic_user;
+             this.tac_user = response.data.tac_user;
+             this.status = response.data.status;
+             this.step_max = response.data.total_moves;
+             this.gridSize = response.data.grid_size;
+           } catch (error) {
+             this.errorMessage = "Error fetching board";
+           }
+         },
+         async setBoard() {
+           this.gameId = this.gameIdSelection;
+           this.step=10000;
+           await this.fetchBoard();
+         },
+       async goBack() {
+          this.step--;
+          if (this.step < 0) this.step = 0;
+          if (this.step > this.step_max) this.step=this.step_max-1;
+          await this.fetchBoard();
+       },
+
+       async goForward() {
+          this.step++;
+          await this.fetchBoard();
+       },
+         resetGame() {
+           this.board = Array(this.gridSize * this.gridSize).fill("-");
+           this.currentPlayer = "Hax";
+           this.createGame();
+         }
+       },
+       watch: {
+         board: {
+           deep: true,
+         }
+       }
+     });
+   </script>
+ </body>
+ </html>
+

@@ -1,0 +1,87 @@
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃                                                                                             Tic Tac Toe Django App                                                                                             ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+This is a simple Tic Tac Toe web application built using Django, Django Rest Framework, and SQLite3.
+
+
+                                                                                                  Main Features
+
+ • User registration and authentication
+ • Create and join games
+ • Play against other users or an AI opponent
+ • View game history and board state at any point in the game
+ • View leaderboard of best players based on win-loss ratio
+
+
+                                                                                             Frameworks and Libraries
+
+ • Django: A high-level Python web framework that enables rapid development of secure and maintainable websites.
+ • Django Rest Framework: A powerful and flexible toolkit for building Web APIs.
+ • SQLite3: A C library that provides a lightweight disk-based database that doesn't require a separate server process and allows accessing the database using a nonstandard variant of the SQL query language.
+
+
+                                                                                              Installation and Setup
+
+ 1 Clone the repository:
+
+
+ git clone https://github.com/yourusername/tictactoe-django.git
+
+
+ 2 Change to the project directory:
+
+
+ cd tictactoe-django
+
+
+ 3 Create a virtual environment and activate it:
+
+
+ python3 -m venv venv
+ source venv/bin/activate
+
+
+ 4 Install the required packages:
+
+
+ pip install -r requirements.txt
+
+
+ 5 Apply the migrations:
+
+
+ python manage.py migrate
+
+
+ 6 Run the development server:
+
+
+ python manage.py runserver
+
+
+The application should now be running at http://127.0.0.1:8000/.
+
+
+                                                                                                      Usage
+
+ 1 Register a new user or log in with an existing account.
+ 2 Create a new game or join an existing one.
+ 3 Play the game by clicking on the board cells.
+ 4 View the game history and board state at any point in the game.
+ 5 Check the leaderboard to see the best players based on their win-loss ratio.
+
+
+                                                                                                  API Endpoints
+
+ • /api/players/: List all players or create a new player.
+ • /api/games/: List all games or create a new game.
+ • /api/moves/: List all moves or create a new move.
+ • /api/best-players/: List the top 20 players based on their win-loss ratio.
+ • /api/games/<int:game_id>/board/: Get the board state of a specific game.
+ • /api/games/<int:game_id>/delete/: Delete a specific game.
+
+
+                                                                                                     License
+
+This project is licensed under the MIT License.
