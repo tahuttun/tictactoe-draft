@@ -4,7 +4,6 @@ This is a simple Tic Tac Toe web application built using Django, Django Rest Fra
 
 
 # Main Features
-* Single and multiplayer
 * Create and join games
 * Play against other users or an AI opponent
 * View game history and board state at any point in the game
