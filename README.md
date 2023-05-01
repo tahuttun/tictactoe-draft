@@ -1,6 +1,6 @@
 # Tic Tac Toe Django App
 
-This is a simple Tic Tac Toe web application built using Django, Django Rest Framework, and SQLite3. The majority of the code and documentation was generated through ChatGPT4 and ChatBlade, primarily for educational purposes.
+This is a simple Tic Tac Toe web application built using Django, Django Rest Framework, and SQLite3. The majority of the code and documentation was generated through ChatGPT4 and ChatBlade, primarily for educational purposes. This project attends to https://twoday.fi/koodihaaste code challenge.
 
 
 # Main Features
