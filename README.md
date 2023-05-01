@@ -23,7 +23,7 @@ This is a simple Tic Tac Toe web application built using Django, Django Rest Fra
  * python3 manage.py migrate
  * python3 manage.py makemigrations
  
-# Run the server
+# Run the server (tested with Ubuntu)
 python manage.py runserver
 
 The application should now be running at http://localhost:8000/static/index.html.
